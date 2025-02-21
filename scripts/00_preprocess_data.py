@@ -14,7 +14,10 @@ logger.info(yaml.dump(config, default_flow_style=False))
 spark = SparkSession.builder.getOrCreate()
 
 df = spark.read.csv(
-    f"/Volumes/{config.catalog_name}/{config.schema_name}/default_of_credit_card_clients/default_of_credit_card_clients.csv", header=True, inferSchema=True, separator=";"
+    f"/Volumes/{config.catalog_name}/{config.schema_name}/default_of_credit_card_clients/default_of_credit_card_clients.csv",
+    header=True,
+    inferSchema=True,
+    separator=";",
 ).toPandas()
 
 # Initialize DataProcessor
