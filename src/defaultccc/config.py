@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
 import yaml
 from pydantic import BaseModel
@@ -10,7 +10,7 @@ class ProjectConfig(BaseModel):
     target: str
     catalog_name: str
     schema_name: str
-    # parameters: Dict[str, Any]  # Dictionary to hold model-related parameters
+    parameters: Dict[str, Any]  # Dictionary to hold model-related parameters
     experiment_name_basic: Optional[str]
     experiment_name_custom: Optional[str]
     experiment_name_fe: Optional[str]

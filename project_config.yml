@@ -1,26 +1,18 @@
 catalog_name: maven_training_databricks
-schema_name: default-ccc
+schema_name: default_ccc
+
 experiment_name_basic: /Shared/default-ccc-basic
 experiment_name_custom: /Shared/default-ccc-custom
 experiment_name_fe: /Shared/default-ccc-fe
 
-# parameters:
-#   learning_rate:0.01
-#   n_estimators:1000
-#   max_depth:6
+parameters:
+  penalty: 'l2'
+  C: 1.0
+  solver: 'lbfgs'
+  max_iter: 200
+  class_weight: 'balanced'
 
 num_features:
-  - SEX
-  - EDUCATION
-  - MARRIAGE
-  - PAY_0
-  - PAY_2
-  - PAY_3
-  - PAY_4
-  - PAY_5
-  - PAY_6
-
-cat_features:
   - LIMIT_BAL
   - AGE
   - BILL_AMT1
@@ -36,4 +28,15 @@ cat_features:
   - PAY_AMT5
   - PAY_AMT6
 
-target: default payment next month
+cat_features:
+  - SEX
+  - EDUCATION
+  - MARRIAGE
+  - PAY_0
+  - PAY_2
+  - PAY_3
+  - PAY_4
+  - PAY_5
+  - PAY_6
+
+target: default_payment_next_month

@@ -726,7 +726,7 @@ wheels = [
 ]
 
 [[package]]
-name = "housing-price"
+name = "default-ccc"
 version = "0.0.1"
 source = { editable = "." }
 dependencies = [

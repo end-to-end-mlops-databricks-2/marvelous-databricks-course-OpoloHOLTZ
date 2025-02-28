@@ -11,13 +11,13 @@ logger.info("Configuration loaded:")
 logger.info(yaml.dump(config, default_flow_style=False))
 
 # Load the house prices dataset
-spark = SparkSession.builder.getOrCreate()
+# spark = SparkSession.builder.getOrCreate()
 
 df = spark.read.csv(
-    f"/Volumes/{config.catalog_name}/{config.schema_name}/default_of_credit_card_clients/default_of_credit_card_clients.csv",
+    path=f"/Volumes/{config.catalog_name}/{config.schema_name}/default_of_credit_card_clients/default_of_credit_card_clients.csv",
     header=True,
     inferSchema=True,
-    separator=";",
+    sep=";"
 ).toPandas()
 
 # Initialize DataProcessor
