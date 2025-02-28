@@ -24,12 +24,8 @@ class DataProcessor:
         for cat_col in cat_features:
             self.df[cat_col] = self.df[cat_col].astype("category")
 
-        # Rename my target name
-        target_old = self.config.target
-        target = target_old.replace(" ", "_")
-        self.df = self.df.rename(columns={target_old: target})
-
         # Extract target and relevant features
+        target = self.config.target
         relevant_columns = cat_features + num_features + [target] + ["ID"]
         self.df = self.df[relevant_columns]
         self.df["ID"] = self.df["ID"].astype("str")
