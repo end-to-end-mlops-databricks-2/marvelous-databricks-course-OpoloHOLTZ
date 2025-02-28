@@ -1,7 +1,5 @@
 import mlflow
-import pandas as pd
 from pyspark.sql import SparkSession
-from loguru import logger
 
 from defaultccc.config import ProjectConfig, Tags
 from defaultccc.models.model_basic import BasicModel

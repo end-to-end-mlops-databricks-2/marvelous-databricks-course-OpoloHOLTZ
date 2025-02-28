@@ -1,0 +1,40 @@
+artifact_path: logit_pipeline_model
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.11.11
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.5.2
+mlflow_version: 2.17.0
+model_size_bytes: 4547
+model_uuid: 10f3d9105f3549ce9f1f3bc748f7c9a5
+run_id: 0d01d1c5dc7649acaf2114e53297e7c1
+signature:
+  inputs: '[{"type": "integer", "name": "LIMIT_BAL", "required": true}, {"type": "integer",
+    "name": "BILL_AMT1", "required": true}, {"type": "integer", "name": "BILL_AMT2",
+    "required": true}, {"type": "integer", "name": "BILL_AMT3", "required": true},
+    {"type": "integer", "name": "BILL_AMT4", "required": true}, {"type": "integer",
+    "name": "BILL_AMT5", "required": true}, {"type": "integer", "name": "BILL_AMT6",
+    "required": true}, {"type": "integer", "name": "PAY_AMT1", "required": true},
+    {"type": "integer", "name": "PAY_AMT2", "required": true}, {"type": "integer",
+    "name": "PAY_AMT3", "required": true}, {"type": "integer", "name": "PAY_AMT4",
+    "required": true}, {"type": "integer", "name": "PAY_AMT5", "required": true},
+    {"type": "integer", "name": "PAY_AMT6", "required": true}, {"type": "string",
+    "name": "AGE", "required": true}, {"type": "integer", "name": "SEX", "required":
+    true}, {"type": "integer", "name": "EDUCATION", "required": true}, {"type": "integer",
+    "name": "MARRIAGE", "required": true}, {"type": "integer", "name": "PAY_0", "required":
+    true}, {"type": "integer", "name": "PAY_2", "required": true}, {"type": "integer",
+    "name": "PAY_3", "required": true}, {"type": "integer", "name": "PAY_4", "required":
+    true}, {"type": "integer", "name": "PAY_5", "required": true}, {"type": "integer",
+    "name": "PAY_6", "required": true}]'
+  outputs: '[{"type": "tensor", "tensor-spec": {"dtype": "int32", "shape": [-1]}}]'
+  params: null
+utc_time_created: '2025-02-28 16:02:29.002690'
