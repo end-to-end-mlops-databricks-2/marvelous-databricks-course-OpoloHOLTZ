@@ -28,9 +28,10 @@ data_processor.preprocess()
 
 # Split the data
 X_train, X_test = data_processor.split_data()
-logger.info("Training set shape: %s", X_train.shape)
-logger.info("Test set shape: %s", X_test.shape)
+logger.info(f"Training set shape: {X_train.shape}")
+logger.info(f"Test set shape: {X_test.shape}")
 
 # Save to catalog
 logger.info("Saving data to catalog")
 data_processor.save_to_catalog(X_train, X_test)
+

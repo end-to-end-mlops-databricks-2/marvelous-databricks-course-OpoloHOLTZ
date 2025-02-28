@@ -23,12 +23,19 @@ class DataProcessor:
         cat_features = self.config.cat_features
         for cat_col in cat_features:
             self.df[cat_col] = self.df[cat_col].astype("category")
-
+        
+        # Replace 'age' column with age groups
+        if "AGE" in self.df.columns:
+            bins = [20, 30, 40, 50, 60, float("inf")]
+            labels = ["20-30", "30-40", "40-50", "50-60", "60+"]
+            self.df["AGE"] = pd.cut(self.df["AGE"], bins=bins, labels=labels, right=False)
+        
         # Extract target and relevant features
         target = self.config.target
         relevant_columns = cat_features + num_features + [target] + ["ID"]
         self.df = self.df[relevant_columns]
         self.df["ID"] = self.df["ID"].astype("str")
+
 
     def split_data(self, test_size=0.2, random_state=42):
         """Split the DataFrame (self.df) into training and test sets."""
