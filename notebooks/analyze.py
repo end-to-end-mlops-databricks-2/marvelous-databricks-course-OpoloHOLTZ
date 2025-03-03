@@ -9,7 +9,7 @@ config = ProjectConfig.from_yaml(config_path="../project_config.yml")
 logger.info("Configuration loaded:")
 logger.info(yaml.dump(config, default_flow_style=False))
 
-# Load the house prices dataset
+# Load the dataset
 spark = SparkSession.builder.getOrCreate()
 
 df = spark.read.csv(
