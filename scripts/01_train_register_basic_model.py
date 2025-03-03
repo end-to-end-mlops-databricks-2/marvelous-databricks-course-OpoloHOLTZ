@@ -4,8 +4,8 @@ from pyspark.sql import SparkSession
 from defaultccc.config import ProjectConfig, Tags
 from defaultccc.models.model_basic import BasicModel
 
-mlflow.set_tracking_uri("databrics")
-mlflow.set_registry_uri("databrics-uc")
+mlflow.set_tracking_uri("databricks://opoloholtz")
+mlflow.set_registry_uri("databricks-uc://opoloholtz")
 
 config = ProjectConfig.from_yaml(config_path="../project_config.yml")
 spark = SparkSession.builder.getOrCreate()
@@ -45,7 +45,7 @@ prediction_df = basic_model.load_latest_model_and_predict(test_set[test_set.colu
 print(prediction_df)
 
 
-
+# ---------------------------------------------------------------------------------------------------------
 # # Try to delete a model by experiment but not working yet.
 
 # BasicModel.delete_models_by_experiment(
