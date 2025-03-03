@@ -1,5 +1,6 @@
 import yaml
 from loguru import logger
+from pyspark.sql import SparkSession
 
 from defaultccc.config import ProjectConfig
 from defaultccc.data_processor import DataProcessor
