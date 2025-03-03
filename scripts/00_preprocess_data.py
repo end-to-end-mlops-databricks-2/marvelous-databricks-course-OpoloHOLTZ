@@ -1,6 +1,5 @@
 import yaml
 from loguru import logger
-from pyspark.sql import SparkSession
 
 from defaultccc.config import ProjectConfig
 from defaultccc.data_processor import DataProcessor
@@ -11,13 +10,13 @@ logger.info("Configuration loaded:")
 logger.info(yaml.dump(config, default_flow_style=False))
 
 # Load the house prices dataset
-# spark = SparkSession.builder.getOrCreate()
+spark = SparkSession.builder.getOrCreate()
 
 df = spark.read.csv(
     path=f"/Volumes/{config.catalog_name}/{config.schema_name}/default_of_credit_card_clients/default_of_credit_card_clients.csv",
     header=True,
     inferSchema=True,
-    sep=";"
+    sep=";",
 ).toPandas()
 
 # Initialize DataProcessor
@@ -34,4 +33,3 @@ logger.info(f"Test set shape: {X_test.shape}")
 # Save to catalog
 logger.info("Saving data to catalog")
 data_processor.save_to_catalog(X_train, X_test)
-

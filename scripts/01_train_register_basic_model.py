@@ -25,22 +25,23 @@ basic_model.log_model()
 basic_model.register_model()
 
 # Search for an experiment
-run_id = mlflow.search_runs(
-    experiment_names=["/Shared/default-ccc-basic"],
-    filter_string="tags.branch='week2'"
-)["run_id"].iloc[0]
+run_id = mlflow.search_runs(experiment_names=["/Shared/default-ccc-basic"], filter_string="tags.branch='week2'")[
+    "run_id"
+].iloc[0]
 
 model = mlflow.sklearn.load_model(model_uri=f"runs:/{run_id}/logit_pipeline_model")
 
-# Retrieve the dataset 
+# Retrieve the dataset
 basic_model.retrieve_current_run_dataset()
 
-# Retrievethe dataset metadata 
+# Retrievethe dataset metadata
 basic_model.retrieve_current_run_metadata()
 
 test_set = spark.table(f"{config.catalog_name}.{config.schema_name}.test_set").toPandas()
 
-prediction_df = basic_model.load_latest_model_and_predict(test_set[test_set.columns[~test_set.columns.isin([config.target])]])
+prediction_df = basic_model.load_latest_model_and_predict(
+    test_set[test_set.columns[~test_set.columns.isin([config.target])]]
+)
 
 print(prediction_df)
 
@@ -60,7 +61,3 @@ print(prediction_df)
 # models = client.search_registered_models()
 # for m in models:
 #     print(m.name)
-
-
-
-    
