@@ -25,9 +25,10 @@ basic_model.log_model()
 basic_model.register_model()
 
 # Search for an experiment
-run_id = mlflow.search_runs(experiment_names=["/Shared/default-ccc-basic"], filter_string="tags.branch='week2'")[
-    "run_id"
-].iloc[0]
+run_id = mlflow.search_runs(
+    experiment_names=["/Shared/default-ccc-basic"], 
+    filter_string="tags.branch='week2'"
+    )["run_id"].iloc[0]
 
 model = mlflow.sklearn.load_model(model_uri=f"runs:/{run_id}/logit_pipeline_model")
 

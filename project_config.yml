@@ -2,8 +2,6 @@ catalog_name: maven_training_databricks
 schema_name: default_ccc
 
 experiment_name_basic: /Shared/default-ccc-basic
-experiment_name_custom: /Shared/default-ccc-custom
-experiment_name_fe: /Shared/default-ccc-fe
 
 parameters:
   penalty: 'l2'
@@ -11,6 +9,21 @@ parameters:
   solver: 'lbfgs'
   max_iter: 200
   class_weight: 'balanced'
+
+parameters_a:
+  penalty: 'l2'
+  C: 1.0
+  solver: 'lbfgs'
+  max_iter: 200
+  class_weight: 'balanced'
+
+parameters_b:
+  penalty: 'elasticnet'
+  C: 0.5
+  solver: 'lbfgs'
+  max_iter: 500
+  class_weight: None
+  l1_ratio: 0.5
 
 num_features:
   - LIMIT_BAL

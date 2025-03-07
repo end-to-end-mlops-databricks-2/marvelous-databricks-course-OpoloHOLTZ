@@ -30,6 +30,7 @@ class BasicModel:
         self.data_version = "0"
         self.tags = tags.dict()
         self.model_name = f"{self.catalog_name}.{self.schema_name}.default_ccc_model_basic"
+        self.artifact = "logit_pipeline_model"
 
     def load_data(self):
         """
@@ -79,7 +80,7 @@ class BasicModel:
         """
         Train the model using the pipeline
         """
-        logger.info("Strating to train...")
+        logger.info("Starting to train...")
         self.pipeline.fit(self.X_train, self.y_train)
         logger.info("Model training completed.")
 
@@ -142,7 +143,7 @@ class BasicModel:
                 version=self.data_version,
             )
             mlflow.log_input(dataset, context="training")
-            mlflow.sklearn.log_model(sk_model=self.pipeline, artifact_path="logit_pipeline_model", signature=signature)
+            mlflow.sklearn.log_model(sk_model=self.pipeline, artifact_path=self.artifact, signature=signature)
 
             logger.info(f"Model logged successfully with Run ID: {self.run_id}")
 
@@ -150,11 +151,11 @@ class BasicModel:
         """
         Register the model in the unity catalog.
         """
-        logger.info("Registering the model in the UC...")
+        logger.info(f"Registering the model {self.model_name} in the UC...")
 
         registered_model = mlflow.register_model(
-            model_uri=f"runs:/{self.run_id}/logit_pipeline_model",
-            name=f"{self.catalog_name}.{self.schema_name}.default_ccc_model_basic",
+            model_uri=f"runs:/{self.run_id}/{self.artifact}",
+            name=self.model_name,
             tags=self.tags,
         )
 
@@ -164,7 +165,7 @@ class BasicModel:
 
         client = MlflowClient()
         client.set_registered_model_alias(
-            name=f"{self.catalog_name}.{self.schema_name}.default_ccc_model_basic",
+            name=self.model_name,
             alias="latest-model",  # the alias name is mandatory for databricks
             version=latest_version,
         )
