@@ -20,7 +20,10 @@ dependencies = ["mlflow==2.17.0",
                 "pydantic==2.9.2",
                 "databricks-connect>=15.4.1, <16",
                 "loguru",
-                "pip"
+                "pip",
+                "requests",
+                "pyspark",
+                "databricks-connect==15.4.6"
                 ]
 
 [project.optional-dependencies]

@@ -44,20 +44,3 @@ prediction_df = basic_model.load_latest_model_and_predict(
 )
 
 print(prediction_df)
-
-
-# ---------------------------------------------------------------------------------------------------------
-# # Try to delete a model by experiment but not working yet.
-
-# BasicModel.delete_models_by_experiment(
-#     experiment_name="/Shared/default-ccc-basic",
-#     filter_string="tags.branch='week2'",
-#     model_name=f"{config.catalog_name}.{config.schema_name}.default_ccc_model_basic"
-# )
-
-# # Find the model name
-# from mlflow import MlflowClient
-# client = MlflowClient()
-# models = client.search_registered_models()
-# for m in models:
-#     print(m.name)
