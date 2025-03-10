@@ -1,19 +1,16 @@
 import os
-import requests
+
 import mlflow
-import pandas as pd
 import numpy as np
+import pandas as pd
+import requests
 from databricks.sdk import WorkspaceClient
+from databricks.sdk.service.serving import EndpointCoreConfigInput, ServedEntityInput
 from loguru import logger
-from databricks.sdk.service.serving import (
-    EndpointCoreConfigInput,
-    ServedEntityInput)
-from sklearn.metrics import (
-    accuracy_score, confusion_matrix, f1_score, precision_score, recall_score, roc_auc_score
-)
+from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, precision_score, recall_score, roc_auc_score
 
 
-class ModelServing():
+class ModelServing:
     def __init__(self, endpoint_name: str, model_name: str):
         """
         Initialize the model serving manager.
@@ -21,8 +18,7 @@ class ModelServing():
         self.workspace = WorkspaceClient()
         self.endpoint_name = endpoint_name
         self.model_name = model_name
-    
-    
+
     def get_latest_model_version(self):
         """
         Get the lastest version of the model.
@@ -32,7 +28,9 @@ class ModelServing():
         logger.info(f"Latest model version: {latest_version}")
         return latest_version
 
-    def deploy_or_update_serving_endpoint(self, version: str = "latest", workload_size: str = "Small", scale_to_zero: bool = True):
+    def deploy_or_update_serving_endpoint(
+        self, version: str = "latest", workload_size: str = "Small", scale_to_zero: bool = True
+    ):
         """
         Deploys the model serving endpoint in Databricks.
 
@@ -69,9 +67,7 @@ class ModelServing():
         """
         Calls the model serving endpoint with a given input record.
         """
-        serving_endpoint = (
-            f"https://{os.environ['DBR_HOST']}/serving-endpoints/default_ccc-model-serving/invocations"
-        )
+        serving_endpoint = f"https://{os.environ['DBR_HOST']}/serving-endpoints/default_ccc-model-serving/invocations"
         response = requests.post(
             serving_endpoint,
             headers={"Authorization": f"Bearer {os.environ['DBR_TOKEN']}"},
@@ -86,20 +82,20 @@ class ModelServing():
         logger.info("Evaluating the deployed model via the serving endpoint...")
         records = input_data.to_dict(orient="records")
         status_code, response = self.call_endpoint(records)
-        
+
         if status_code == 200:
             y_pred = np.array(response["predictions"]).flatten()
             y_true = input_data[target].values
-            
+
             metrics = {
                 "accuracy": accuracy_score(y_true, y_pred),
                 "precision": precision_score(y_true, y_pred),
                 "recall": recall_score(y_true, y_pred),
                 "f1_score": f1_score(y_true, y_pred),
                 "roc_auc": roc_auc_score(y_true, y_pred),
-                "confusion_matrix": confusion_matrix(y_true, y_pred).tolist()
+                "confusion_matrix": confusion_matrix(y_true, y_pred).tolist(),
             }
-            
+
             logger.info(f"Serving Model Evaluation: {metrics}")
             return metrics
         else:

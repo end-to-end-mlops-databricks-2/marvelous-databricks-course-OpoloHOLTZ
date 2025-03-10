@@ -1,8 +1,5 @@
 import os
-import time
-from typing import Dict, List
 
-import requests
 from pyspark.dbutils import DBUtils
 from pyspark.sql import SparkSession
 
@@ -22,8 +19,8 @@ config = ProjectConfig.from_yaml(config_path="../project_config.yml")
 
 # Initialize feature store manager
 model_serving = ModelServing(
-    model_name=f"{config.catalog_name}.{config.schema_name}.default_ccc_model_basic", 
-    endpoint_name="default_ccc-model-serving"
+    model_name=f"{config.catalog_name}.{config.schema_name}.default_ccc_model_basic",
+    endpoint_name="default_ccc-model-serving",
 )
 
 # Deploy the model serving endpoint
@@ -43,4 +40,6 @@ dataframe_records = [[record] for record in sampled_records]
 model_serving.call_endpoint(dataframe_records[0])
 
 # Call the endpoint with one training set sample and evaluate
-model_serving.evaluate_serving_model(test_set[required_columns + [config.target]].sample(n=100, replace=True), config.target)
+model_serving.evaluate_serving_model(
+    test_set[required_columns + [config.target]].sample(n=100, replace=True), config.target
+)
