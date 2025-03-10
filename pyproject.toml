@@ -1,7 +1,7 @@
 [project]
-name = "housing-price"
+name = "default-ccc"
 version = "0.0.1"
-description = "Housing prices project"
+description = "Default credit card clients project"
 requires-python = ">=3.11, <3.12"
 dependencies = ["mlflow==2.17.0",
                 "cffi==1.17.1",
@@ -12,12 +12,17 @@ dependencies = ["mlflow==2.17.0",
                 "psutil==6.0.0",
                 "pyarrow==14.0.1",
                 "scikit-learn==1.5.2",
-                "lightgbm==4.5.0",
                 "scipy==1.14.1",
                 "databricks-feature-engineering==0.6",
                 "databricks-feature-lookup==1.2.0",
                 "databricks-sdk==0.32.0",
-                "pydantic==2.9.2"
+                "pydantic==2.9.2",
+                "databricks-connect>=15.4.1, <16",
+                "loguru",
+                "pip",
+                "requests",
+                "pyspark",
+                "databricks-connect==15.4.6"
                 ]
 
 [project.optional-dependencies]
@@ -33,10 +38,12 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where =["src"]
-include = ["house_price*"]
+include = ["defaultccc*"]
 
 [tool.ruff]
 line-length = 120
+
+[tool.ruff.lint]
 select = [
     "F",  # pyflakes rules
     "E",  # pycodestyle error rules
@@ -47,6 +54,3 @@ select = [
 ignore = [
     "E501",  # line-too-long
 ]
-
-[tool.ruff.format]
-indent-style = "space"
