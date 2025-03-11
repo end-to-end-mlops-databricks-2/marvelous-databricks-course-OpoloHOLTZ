@@ -16,20 +16,21 @@ dbutils = DBUtils(spark)
 mlflow.set_tracking_uri("databricks://opoloholtz")
 mlflow.set_registry_uri("databricks-uc://opoloholtz")
 
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    "--root_path",
-    action="store",
-    default=None,
-    type=str,
-    required=True,
-)
+# parser = argparse.ArgumentParser()
+# parser.add_argument(
+#     "--root_path",
+#     action="store",
+#     default=None,
+#     type=str,
+#     required=True,
+# )
 
 # get environment variables
 os.environ["DBR_TOKEN"] = dbutils.notebook.entry_point.getDbutils().notebook().getContext().apiToken().get()
 os.environ["DBR_HOST"] = spark.conf.get("spark.databricks.workspaceUrl")
 
 # Load project config
+# config = ProjectConfig.from_yaml(config_path=f"{args.root_path}/files/project_config.yml")
 config = ProjectConfig.from_yaml(config_path="../project_config.yml")
 
 # Initialize feature store manager
