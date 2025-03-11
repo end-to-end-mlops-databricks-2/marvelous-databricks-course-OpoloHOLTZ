@@ -1,10 +1,12 @@
 import mlflow
 import numpy as np
 import pandas as pd
+import pyspark.sql.functions as F
+
 from loguru import logger
 from mlflow import MlflowClient
 from mlflow.models.signature import infer_signature
-from pyspark.sql import SparkSession
+from pyspark.sql import SparkSession, DataFrame
 from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, precision_score, recall_score, roc_auc_score
@@ -197,7 +199,7 @@ class BasicModel:
 
         return metrics, params
 
-    def load_latest_model_and_predict(self, input_data: pd.DataFrame):
+    def load_latest_model_and_predict(self, input_data: DataFrame):
         """
         Load the lastest, alias="latest-model" saved from register_model.
         Predict the input data with the latest model.
@@ -214,39 +216,54 @@ class BasicModel:
 
         logger.info("Model is successfully loaded.")
 
+        # Convert input_data to pandas for prediction
+        pandas_input_data = input_data.toPandas()
+
         # Predict
-        predictions = model.predict(input_data)
+        predictions = model.predict(pandas_input_data)
 
-        return predictions
+        predictions_df = pd.DataFrame(predictions, columns=["prediction"])
+        pandas_input_data['prediction'] = predictions_df
 
-    def model_improved(self, test_set: pd.DataFrame):
+        return pandas_input_data
+
+    def model_improved(self, test_set: DataFrame):
         """
         Evaluate the model performance on the test set.
 
         :param test_set: Pandas dataframe. The test dataset from Databricks table.
         """
-        # X_test = test_set.drop(self.config.target)
+        X_test = test_set.drop(self.config.target)
 
-        # predictions_latest = self.load_latest_model_and_predict(X_test).withColumnRenamed(
-        #     "prediction", "prediction_latest"
-        # )
-
-        predictions_latest = self.load_latest_model_and_predict(
-            test_set[test_set.columns[~test_set.columns.isin([self.config.target])]]
-        ).withColumnRenamed("prediction", "prediction_latest")
+        predictions_latest = self.load_latest_model_and_predict(X_test).rename(columns={"prediction": "prediction_latest"})
+        predictions_latest = predictions_latest[["ID", "prediction_latest"]]
+        # predictions_latest = self.load_latest_model_and_predict(X_test).withColumnRenamed("prediction", "prediction_latest")
+        # predictions_latest = predictions_latest.select("ID", "prediction_latest")
 
         current_model_uri = f"runs:/{self.run_id}/logit_pipeline_model"
-        predictions_current = self.predict(model_uri=current_model_uri).withColumnRenamed(
-            "prediction", "prediction_current"
-        )
+        model_current = mlflow.sklearn.load_model(current_model_uri)
 
-        test_set = test_set.select("ID", self.config.target)
+        logger.info("Current model is successfully loaded.")
+
+        # Convert input_data to pandas for prediction
+        predictions_current = X_test.toPandas()
+
+        # Predict with the current model and add the prediction as a new column to the input_data and rename it
+        predictions_current_pred = model_current.predict(predictions_current)
+        predictions_current_pred_df = pd.DataFrame(predictions_current_pred, columns=["prediction_current"])
+        predictions_current['prediction_current'] = predictions_current_pred_df
+        predictions_current = predictions_current[["ID", "prediction_current"]]
+
+        test_set = test_set.toPandas()[["ID", self.config.target]]
 
         logger.info("Predictions are ready.")
 
         # Join the DataFrames on the 'ID' column
-        df = test_set.join(predictions_current, on="ID").join(predictions_latest, on="ID")
+        df = test_set.merge(predictions_current, on="ID", how="inner")
+        df = df.merge(predictions_latest, on="ID", how="inner")
 
+        print(df)
+        
         y_true = df[self.config.target]
         y_pred_current = df["prediction_current"]
         y_pred_latest = df["prediction_latest"]
@@ -267,4 +284,6 @@ class BasicModel:
         else:
             logger.info("New Model performs worse. Keeping the old model.")
             return False
+
+        return predictions_latest
         

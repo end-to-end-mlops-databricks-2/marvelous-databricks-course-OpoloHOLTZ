@@ -28,8 +28,8 @@ resources:
     default-ccc:
       name: default-ccc-workflow
       schedule:
-        quartz_cron_expression: "0 0 6 ? * MON"
-        timezone_id: "Europe/Amsterdam"
+        quartz_cron_expression: "0 0 2 ? * MON"
+        timezone_id: "Europe/Paris"
         pause_status: ${var.schedule_pause_status}
       tags:
         project_name: "default-ccc-classifier"
@@ -106,8 +106,6 @@ targets:
     workspace:
       host: https://adb-4498504268974234.14.azuredatabricks.net
       root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.target}/${bundle.name}
-    variables:
-      schedule_pause_status: PAUSED
 
   acc:
     workspace:
