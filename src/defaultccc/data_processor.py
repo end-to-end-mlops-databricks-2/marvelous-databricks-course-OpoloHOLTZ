@@ -74,6 +74,7 @@ class DataProcessor:
             "SET TBLPROPERTIES (delta.enableChangeDataFeed = true);"
         )
 
+
 def generate_synthetic_data(df, num_rows=10):
     """
     Generates synthetic data based on the distribution of the input DataFrame.
@@ -85,7 +86,7 @@ def generate_synthetic_data(df, num_rows=10):
             continue
 
         if pd.api.types.is_numeric_dtype(df[column]):
-                synthetic_data[column] = np.random.normal(df[column].mean(), df[column].std(), num_rows)
+            synthetic_data[column] = np.random.normal(df[column].mean(), df[column].std(), num_rows)
 
         elif pd.api.types.is_categorical_dtype(df[column]) or pd.api.types.is_object_dtype(df[column]):
             synthetic_data[column] = np.random.choice(
@@ -95,19 +96,20 @@ def generate_synthetic_data(df, num_rows=10):
             synthetic_data[column] = np.random.choice(df[column], num_rows)
 
     # Convert relevant numeric columns to integers
-    num_features = {"LIMIT_BAL",
-    "BILL_AMT1",
-    "BILL_AMT2",
-    "BILL_AMT3",
-    "BILL_AMT4",
-    "BILL_AMT5",
-    "BILL_AMT6",
-    "PAY_AMT1",
-    "PAY_AMT2",
-    "PAY_AMT3",
-    "PAY_AMT4",
-    "PAY_AMT5",
-    "PAY_AMT6"
+    num_features = {
+        "LIMIT_BAL",
+        "BILL_AMT1",
+        "BILL_AMT2",
+        "BILL_AMT3",
+        "BILL_AMT4",
+        "BILL_AMT5",
+        "BILL_AMT6",
+        "PAY_AMT1",
+        "PAY_AMT2",
+        "PAY_AMT3",
+        "PAY_AMT4",
+        "PAY_AMT5",
+        "PAY_AMT6",
     }
 
     for col in num_features.intersection(df.columns):

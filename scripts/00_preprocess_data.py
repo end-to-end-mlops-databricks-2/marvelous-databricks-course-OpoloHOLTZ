@@ -12,15 +12,10 @@ parser.add_argument(
     "--root_path",
     action="store",
     default="/Workspace/Users/opolo.holtz@amaris.com/.bundle/marvelous-databricks-course-OpoloHOLTZ",
-    type=str
+    type=str,
 )
 
-parser.add_argument(
-    "--env",
-    action="store",
-    default="dev",
-    type=str
-)
+parser.add_argument("--env", action="store", default="dev", type=str)
 args = parser.parse_args()
 
 root_path = args.root_path

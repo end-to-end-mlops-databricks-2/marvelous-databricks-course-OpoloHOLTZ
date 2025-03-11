@@ -1,12 +1,10 @@
 import mlflow
 import numpy as np
 import pandas as pd
-import pyspark.sql.functions as F
-
 from loguru import logger
 from mlflow import MlflowClient
 from mlflow.models.signature import infer_signature
-from pyspark.sql import SparkSession, DataFrame
+from pyspark.sql import DataFrame, SparkSession
 from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, precision_score, recall_score, roc_auc_score
@@ -223,7 +221,7 @@ class BasicModel:
         predictions = model.predict(pandas_input_data)
 
         predictions_df = pd.DataFrame(predictions, columns=["prediction"])
-        pandas_input_data['prediction'] = predictions_df
+        pandas_input_data["prediction"] = predictions_df
 
         return pandas_input_data
 
@@ -235,7 +233,9 @@ class BasicModel:
         """
         X_test = test_set.drop(self.config.target)
 
-        predictions_latest = self.load_latest_model_and_predict(X_test).rename(columns={"prediction": "prediction_latest"})
+        predictions_latest = self.load_latest_model_and_predict(X_test).rename(
+            columns={"prediction": "prediction_latest"}
+        )
         predictions_latest = predictions_latest[["ID", "prediction_latest"]]
         # predictions_latest = self.load_latest_model_and_predict(X_test).withColumnRenamed("prediction", "prediction_latest")
         # predictions_latest = predictions_latest.select("ID", "prediction_latest")
@@ -251,7 +251,7 @@ class BasicModel:
         # Predict with the current model and add the prediction as a new column to the input_data and rename it
         predictions_current_pred = model_current.predict(predictions_current)
         predictions_current_pred_df = pd.DataFrame(predictions_current_pred, columns=["prediction_current"])
-        predictions_current['prediction_current'] = predictions_current_pred_df
+        predictions_current["prediction_current"] = predictions_current_pred_df
         predictions_current = predictions_current[["ID", "prediction_current"]]
 
         test_set = test_set.toPandas()[["ID", self.config.target]]
@@ -263,7 +263,7 @@ class BasicModel:
         df = df.merge(predictions_latest, on="ID", how="inner")
 
         print(df)
-        
+
         y_true = df[self.config.target]
         y_pred_current = df["prediction_current"]
         y_pred_latest = df["prediction_latest"]
@@ -286,4 +286,3 @@ class BasicModel:
             return False
 
         return predictions_latest
-        

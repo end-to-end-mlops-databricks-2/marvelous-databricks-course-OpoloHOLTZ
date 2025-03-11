@@ -1,5 +1,5 @@
-import os
 import argparse
+import os
 
 import mlflow
 from loguru import logger
@@ -61,6 +61,5 @@ model_serving.call_endpoint(dataframe_records[0])
 
 # Call the endpoint with one training set sample and evaluate
 model_serving.evaluate_serving_model(
-    test_set[required_columns + [config.target]].sample(n=100, replace=True)
-    ,config.target
+    test_set[required_columns + [config.target]].sample(n=100, replace=True), config.target
 )

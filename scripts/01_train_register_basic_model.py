@@ -2,8 +2,8 @@ import argparse
 
 import mlflow
 from loguru import logger
-from pyspark.sql import SparkSession
 from pyspark.dbutils import DBUtils
+from pyspark.sql import SparkSession
 
 from defaultccc.config import ProjectConfig, Tags
 from defaultccc.models.model_basic import BasicModel
