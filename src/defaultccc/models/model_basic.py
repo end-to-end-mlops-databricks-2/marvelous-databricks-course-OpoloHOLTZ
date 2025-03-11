@@ -218,3 +218,52 @@ class BasicModel:
         predictions = model.predict(input_data)
 
         return predictions
+
+    def model_improved(self, test_set: pd.DataFrame):
+        """
+        Evaluate the model performance on the test set.
+
+        :param test_set: Pandas dataframe. The test dataset from Databricks table.
+        """
+        # X_test = test_set.drop(self.config.target)
+
+        # predictions_latest = self.load_latest_model_and_predict(X_test).withColumnRenamed(
+        #     "prediction", "prediction_latest"
+        # )
+
+        predictions_latest = self.load_latest_model_and_predict(
+            test_set[test_set.columns[~test_set.columns.isin([self.config.target])]]
+        ).withColumnRenamed("prediction", "prediction_latest")
+
+        current_model_uri = f"runs:/{self.run_id}/logit_pipeline_model"
+        predictions_current = self.predict(model_uri=current_model_uri).withColumnRenamed(
+            "prediction", "prediction_current"
+        )
+
+        test_set = test_set.select("ID", self.config.target)
+
+        logger.info("Predictions are ready.")
+
+        # Join the DataFrames on the 'ID' column
+        df = test_set.join(predictions_current, on="ID").join(predictions_latest, on="ID")
+
+        y_true = df[self.config.target]
+        y_pred_current = df["prediction_current"]
+        y_pred_latest = df["prediction_latest"]
+
+        # Calculate the metrics
+        f1_current = f1_score(y_true, y_pred_current)
+        f1_latest = f1_score(y_true, y_pred_latest)
+        auc_current = roc_auc_score(y_true, y_pred_current)
+        auc_latest = roc_auc_score(y_true, y_pred_latest)
+
+        logger.info(f"F1-score - Current Model: {f1_current}, Latest Model: {f1_latest}")
+        logger.info(f"AUC-ROC - Current Model: {auc_current}, Latest Model: {auc_latest}")
+
+        # Compare : the model with the best F1 or AUC
+        if f1_current > f1_latest and auc_current > auc_latest:
+            logger.info("Current Model performs better. Registering new model.")
+            return True
+        else:
+            logger.info("New Model performs worse. Keeping the old model.")
+            return False

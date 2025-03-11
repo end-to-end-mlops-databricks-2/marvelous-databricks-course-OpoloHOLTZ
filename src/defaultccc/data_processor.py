@@ -1,3 +1,6 @@
+import time
+
+import numpy as np
 import pandas as pd
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import current_timestamp, to_utc_timestamp
@@ -52,11 +55,11 @@ class DataProcessor:
             "update_timestamp_utc", to_utc_timestamp(current_timestamp(), "UTC")
         )
 
-        train_set_with_timestamp.write.mode("overwrite").saveAsTable(
+        train_set_with_timestamp.write.mode("append").saveAsTable(
             f"{self.config.catalog_name}.{self.config.schema_name}.train_set"
         )
 
-        test_set_with_timestamp.write.mode("overwrite").saveAsTable(
+        test_set_with_timestamp.write.mode("append").saveAsTable(
             f"{self.config.catalog_name}.{self.config.schema_name}.test_set"
         )
 
@@ -70,3 +73,47 @@ class DataProcessor:
             f"ALTER TABLE {self.config.catalog_name}.{self.config.schema_name}.test_set "
             "SET TBLPROPERTIES (delta.enableChangeDataFeed = true);"
         )
+
+def generate_synthetic_data(df, num_rows=10):
+    """
+    Generates synthetic data based on the distribution of the input DataFrame.
+    """
+    synthetic_data = pd.DataFrame()
+
+    for column in df.columns:
+        if column == "ID":
+            continue
+
+        if pd.api.types.is_numeric_dtype(df[column]):
+                synthetic_data[column] = np.random.normal(df[column].mean(), df[column].std(), num_rows)
+
+        elif pd.api.types.is_categorical_dtype(df[column]) or pd.api.types.is_object_dtype(df[column]):
+            synthetic_data[column] = np.random.choice(
+                df[column].unique(), num_rows, p=df[column].value_counts(normalize=True)
+            )
+        else:
+            synthetic_data[column] = np.random.choice(df[column], num_rows)
+
+    # Convert relevant numeric columns to integers
+    num_features = {"LIMIT_BAL",
+    "BILL_AMT1",
+    "BILL_AMT2",
+    "BILL_AMT3",
+    "BILL_AMT4",
+    "BILL_AMT5",
+    "BILL_AMT6",
+    "PAY_AMT1",
+    "PAY_AMT2",
+    "PAY_AMT3",
+    "PAY_AMT4",
+    "PAY_AMT5",
+    "PAY_AMT6"
+    }
+
+    for col in num_features.intersection(df.columns):
+        synthetic_data[col] = synthetic_data[col].astype(np.int32)
+
+    timestamp_base = int(time.time() * 1000)
+    synthetic_data["ID"] = [str(timestamp_base + i) for i in range(num_rows)]
+
+    return synthetic_data
