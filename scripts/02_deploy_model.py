@@ -1,5 +1,7 @@
 import os
+import argparse
 
+import mlflow
 from pyspark.dbutils import DBUtils
 from pyspark.sql import SparkSession
 
@@ -9,6 +11,19 @@ from defaultccc.serving.model_serving import ModelServing
 # spark session
 spark = SparkSession.builder.getOrCreate()
 dbutils = DBUtils(spark)
+
+# My profile:
+mlflow.set_tracking_uri("databricks://opoloholtz")
+mlflow.set_registry_uri("databricks-uc://opoloholtz")
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "--root_path",
+    action="store",
+    default=None,
+    type=str,
+    required=True,
+)
 
 # get environment variables
 os.environ["DBR_TOKEN"] = dbutils.notebook.entry_point.getDbutils().notebook().getContext().apiToken().get()

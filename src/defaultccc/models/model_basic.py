@@ -267,3 +267,4 @@ class BasicModel:
         else:
             logger.info("New Model performs worse. Keeping the old model.")
             return False
+        
