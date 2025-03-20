@@ -1,6 +1,6 @@
 [project]
 name = "default-ccc"
-version = "0.0.3"
+dynamic = ["version"]
 description = "Default credit card clients project"
 requires-python = ">=3.11, <3.12"
 dependencies = ["mlflow==2.17.0",
@@ -35,6 +35,9 @@ dev = ["databricks-connect>=15.4.1, <16",
 requires = [
   "setuptools>=72.0"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+version = {file = "version.txt"}
 
 [tool.setuptools.packages.find]
 where =["src"]

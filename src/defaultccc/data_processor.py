@@ -27,7 +27,7 @@ class DataProcessor:
         for cat_col in cat_features:
             self.df[cat_col] = self.df[cat_col].astype("category")
 
-        # Replace 'age' column with age groups
+        # Replace 'AGE' column with age groups
         if "AGE" in self.df.columns:
             bins = [20, 30, 40, 50, 60, float("inf")]
             labels = ["20-30", "30-40", "40-50", "50-60", "60+"]

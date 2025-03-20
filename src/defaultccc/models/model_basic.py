@@ -237,8 +237,6 @@ class BasicModel:
             columns={"prediction": "prediction_latest"}
         )
         predictions_latest = predictions_latest[["ID", "prediction_latest"]]
-        # predictions_latest = self.load_latest_model_and_predict(X_test).withColumnRenamed("prediction", "prediction_latest")
-        # predictions_latest = predictions_latest.select("ID", "prediction_latest")
 
         current_model_uri = f"runs:/{self.run_id}/logit_pipeline_model"
         model_current = mlflow.sklearn.load_model(current_model_uri)
@@ -261,8 +259,6 @@ class BasicModel:
         # Join the DataFrames on the 'ID' column
         df = test_set.merge(predictions_current, on="ID", how="inner")
         df = df.merge(predictions_latest, on="ID", how="inner")
-
-        print(df)
 
         y_true = df[self.config.target]
         y_pred_current = df["prediction_current"]

@@ -5,6 +5,9 @@
 bundle:
   name: marvelous-databricks-course-OpoloHOLTZ
 
+include:
+  - bundle_monitoring.yml
+
 artifacts:
   default:
     type: whl
@@ -75,7 +78,7 @@ resources:
               - ${var.branch}
           libraries:
             - whl: ./dist/*.whl
-        - task_key: model_updated
+        - task_key: "model_updated"
           condition_task:
             op: "EQUAL_TO"
             left: "{{tasks.train_model.values.model_updated}}"
