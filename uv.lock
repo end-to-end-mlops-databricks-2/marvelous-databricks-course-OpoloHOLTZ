@@ -424,7 +424,6 @@ wheels = [
 
 [[package]]
 name = "default-ccc"
-version = "0.0.3"
 source = { editable = "." }
 dependencies = [
     { name = "cffi" },
